@@ -128,7 +128,7 @@ A high-performance scheduler inspired by browser task dispatchers.
 
 ```mermaid
 flowchart TD
-    Enqueue[enqueue(task)] --> Q{Task Queue}
+    Enqueue[enqueue] --> Q{Task Queue}
     Q --> Worker1
     Q --> Worker2
     Q --> Worker3
