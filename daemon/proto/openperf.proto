@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package openperf_rpc;
+
+// simplified DOM model
+message Node {
+  string id = 1;
+  string tag = 2;
+  string text = 3;
+  string role = 4;
+  string aria_label = 5;
+  bool is_interactive = 6;
+  repeated Node children = 7;
+}
+
+message Page {
+  string id = 1;
+  string url = 2;
+  Node root = 3;
+}
+
+// accessibility
+enum Severity {
+  SEVERITY_INFO = 0;
+  SEVERITY_WARNING = 1;
+  SEVERITY_ERROR = 2;
+}
+
+message AccessibilityIssue {
+  string code = 1;
+  string message = 2;
+  Severity severity = 3;
+  string node_id = 4;
+}
+
+// metrics
+message MetricSample {
+  string name = 1;
+  double value = 2;
+  int64 timestamp_unix_ms = 3;
+}
+
+// requests / responses
+message SubmitPageRequest {
+  Page page = 1;
+}
+
+message SubmitPageResponse {
+  string page_id = 1;
+}
+
+message RunRenderRequest {
+  string page_id = 1;
+}
+
+message RunRenderResponse {
+}
+
+message AnalyzeAccessibilityRequest {
+  string page_id = 1;
+}
+
+message AnalyzeAccessibilityResponse {
+  repeated AccessibilityIssue issues = 1;
+}
+
+message GetMetricsRequest {}
+
+message GetMetricsResponse {
+  repeated MetricSample samples = 1;
+}
+
+// service definition
+service OpenPerfService {
+  rpc SubmitPage(SubmitPageRequest) returns (SubmitPageResponse);
+  rpc RunRenderPipeline(RunRenderRequest) returns (RunRenderResponse);
+  rpc AnalyzeAccessibility(AnalyzeAccessibilityRequest) returns (AnalyzeAccessibilityResponse);
+  rpc GetMetrics(GetMetricsRequest) returns (GetMetricsResponse);
+}
